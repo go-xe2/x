@@ -1,0 +1,100 @@
+package xpath
+
+import (
+	"github.com/go-xe2/x/os/xfile"
+	"github.com/go-xe2/x/xtest"
+	"testing"
+)
+
+func TestSPath_Api(t *testing.T) {
+	xtest.Case(t, func() {
+		pwd := xfile.Pwd()
+		root := pwd + xfile.Separator
+		xfile.Create(root + "x_tmp" + xfile.Separator + "xf.txt")
+		defer xfile.Remove(root + "x_tmp")
+		fp, isDir := Search(root, "x_tmp")
+		xtest.Assert(fp, root+"x_tmp")
+		xtest.Assert(isDir, true)
+		fp, isDir = Search(root, "x_tmp", "xf.txt")
+		xtest.Assert(fp, root+"x_tmp"+xfile.Separator+"xf.txt")
+		xtest.Assert(isDir, false)
+
+		fp, isDir = SearchWithCache(root, "xf_tmp")
+		xtest.Assert(fp, root+"xf_tmp")
+		xtest.Assert(isDir, true)
+		fp, isDir = SearchWithCache(root, "xf_tmp", "xf.txt")
+		xtest.Assert(fp, root+"xf_tmp"+xfile.Separator+"xf.txt")
+		xtest.Assert(isDir, false)
+	})
+}
+
+func TestSPath_Basic(t *testing.T) {
+	xtest.Case(t, func() {
+		pwd := xfile.Pwd()
+		root := pwd + xfile.Separator
+		xfile.Create(root + "xf_tmp" + xfile.Separator + "xf.txt")
+		defer xfile.Remove(root + "xf_tmp")
+		gsp := New(root, false)
+		realPath, err := gsp.Add(root + "xf_tmp")
+		xtest.Assert(err, nil)
+		xtest.Assert(realPath, root+"xf_tmp")
+		realPath, err = gsp.Add("xf_tmp1")
+		xtest.Assert(err != nil, true)
+		xtest.Assert(realPath, "")
+		realPath, err = gsp.Add(root + "xf_tmp" + xfile.Separator + "xf.txt")
+		xtest.Assert(err != nil, true)
+		xtest.Assert(realPath, "")
+		gsp.Remove("xf_tmp1")
+		xtest.Assert(gsp.Size(), 2)
+		xtest.Assert(len(gsp.Paths()), 2)
+		xtest.Assert(len(gsp.AllPaths()), 0)
+		realPath, err = gsp.Set(root + "xf_tmp1")
+		xtest.Assert(err != nil, true)
+		xtest.Assert(realPath, "")
+		realPath, err = gsp.Set(root + "xf_tmp" + xfile.Separator + "xf.txt")
+		xtest.Assert(err != nil, true)
+		xtest.Assert(realPath, "")
+		gsp.Set(root)
+		fp, isDir := gsp.Search("xf_tmp")
+		xtest.Assert(fp, root+"xf_tmp")
+		xtest.Assert(isDir, true)
+		fp, isDir = gsp.Search("xf_tmp", "xf.txt")
+		xtest.Assert(fp, root+"xf_tmp"+xfile.Separator+"xf.txt")
+		xtest.Assert(isDir, false)
+		fp, isDir = gsp.Search("/", "xf.txt")
+		xtest.Assert(fp, root+xfile.Separator)
+		xtest.Assert(isDir, true)
+
+		gsp = New(root, true)
+		realPath, err = gsp.Add(root + "xf_tmp")
+		xtest.Assert(err, nil)
+		xtest.Assert(realPath, root+"xf_tmp")
+
+		xfile.Mkdir(root + "xf_tmp1")
+		xfile.Rename(root+"xf_tmp1", root+"xf_tmp2")
+		xfile.Rename(root+"xf_tmp2", root+"xf_tmp1")
+		defer xfile.Remove(root + "xf_tmp1")
+		realPath, err = gsp.Add("xf_tmp1")
+		xtest.Assert(err != nil, false)
+		xtest.Assert(realPath, root+"xf_tmp1")
+		realPath, err = gsp.Add("xf_tmp3")
+		xtest.Assert(err != nil, true)
+		xtest.Assert(realPath, "")
+		gsp.Remove(root + "xf_tmp")
+		gsp.Remove(root + "xf_tmp1")
+		gsp.Remove(root + "xf_tmp3")
+		xtest.Assert(gsp.Size(), 3)
+		xtest.Assert(len(gsp.Paths()), 3)
+		gsp.AllPaths()
+		gsp.Set(root)
+		fp, isDir = gsp.Search("xf_tmp")
+		xtest.Assert(fp, root+"xf_tmp")
+		xtest.Assert(isDir, true)
+		fp, isDir = gsp.Search("xf_tmp", "xf.txt")
+		xtest.Assert(fp, root+"xf_tmp"+xfile.Separator+"xf.txt")
+		xtest.Assert(isDir, false)
+		fp, isDir = gsp.Search("/", "xf.txt")
+		xtest.Assert(fp, pwd)
+		xtest.Assert(isDir, true)
+	})
+}
