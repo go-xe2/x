@@ -9,6 +9,7 @@ import (
 	"github.com/go-xe2/x/xf/ef/xq/xbinder"
 	. "github.com/go-xe2/x/xf/ef/xqi"
 	"strings"
+	"sync/atomic"
 	"time"
 )
 
@@ -16,6 +17,7 @@ type TBaseDb struct {
 	this         interface{}
 	conn         DbConn
 	tx           *sql.Tx
+	transLayout  int32 // 事务启动层经数
 	lastInsertId int64
 	sqlLogs      []string
 	lastSql      string
@@ -32,9 +34,11 @@ var _ BasicDB = (*TBaseDb)(nil)
 
 func newBaseDb(inherited ...interface{}) *TBaseDb {
 	inst := &TBaseDb{
-		master: nil,
-		slave:  nil,
+		master:      nil,
+		slave:       nil,
+		transLayout: 0,
 	}
+	atomic.StoreInt32(&inst.transLayout, 0)
 	inst.this = inst
 	if len(inherited) > 0 {
 		if _, ok := inherited[0].(BasicDB); ok {
@@ -49,18 +53,36 @@ func (db *TBaseDb) This() interface{} {
 }
 
 func (db *TBaseDb) Close() {
+	//if err := db.master.Close(); err != nil {
+	//	xlog.Debug("close db error:", err)
+	//}
+	//if err := db.slave.Close(); err != nil {
+	//	xlog.Debug("close db error:", err)
+	//}
 }
 
 func (db *TBaseDb) BeginTran() exception.IException {
 	var e error
+	if db.tx != nil {
+		// 事务已开始，不启动新的事务
+		atomic.AddInt32(&db.transLayout, 1)
+		return nil
+	}
 	if db.tx, e = db.master.Begin(); e != nil {
 		return exception.Wrap(e, "开启事务失败")
 	}
+	atomic.AddInt32(&db.transLayout, 1)
 	db.transaction = true
 	return nil
 }
 
 func (db *TBaseDb) Rollback() exception.IException {
+	if db.tx == nil {
+		return exception.NewText("未开始事务")
+	}
+	if layout := atomic.AddInt32(&db.transLayout, -1); layout > 0 {
+		return nil
+	}
 	if err := db.tx.Rollback(); err != nil {
 		return exception.Wrap(err, "回滚事务失败")
 	}
@@ -70,6 +92,12 @@ func (db *TBaseDb) Rollback() exception.IException {
 }
 
 func (db *TBaseDb) Commit() exception.IException {
+	if db.tx == nil {
+		return exception.NewText("未开始事务")
+	}
+	if layout := atomic.AddInt32(&db.transLayout, -1); layout > 0 {
+		return nil
+	}
 	if err := db.tx.Commit(); err != nil {
 		return exception.Wrap(err, "提交事务失败")
 	}
@@ -248,6 +276,7 @@ func (db *TBaseDb) Execute(szSql string, args ...interface{}) (int64, exception.
 
 		var stmt *sql.Stmt
 		var err error
+		// 如果开启事务，在事务中执行脚本
 		if db.tx == nil {
 			stmt, err = db.master.Prepare(szSql)
 		} else {
@@ -324,5 +353,5 @@ func (db *TBaseDb) GetErr() exception.IException {
 }
 
 func (db *TBaseDb) LastSqlDuration() time.Duration {
-	return db.LastSqlDuration()
+	return db.lastDuration
 }

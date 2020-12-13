@@ -20,6 +20,13 @@ func (ef *TEFUint64) Uint64() uint64 {
 	return t.Uint64(ef.baseField.Value())
 }
 
+func (ef *TEFUint64) TryUint64() (uint64, bool) {
+	if ef.IsOpen() {
+		return ef.Uint64(), true
+	}
+	return 0, false
+}
+
 func (ef *TEFUint64) Value() interface{} {
 	return ef.Uint64()
 }

@@ -22,6 +22,13 @@ func (ef *TEFInt) Value() interface{} {
 	return ef.Int()
 }
 
+func (ef TEFInt) TryInt() (int, bool) {
+	if ef.IsOpen() {
+		return ef.Int(), true
+	}
+	return 0, false
+}
+
 func (ef *TEFInt) Int() int {
 	return t.Int(ef.baseField.Value())
 }

@@ -24,6 +24,13 @@ func (ef *TEFUint8) Value() interface{} {
 	return ef.Uint8()
 }
 
+func (ef *TEFUint8) TryUint8() (uint8, bool) {
+	if ef.IsOpen() {
+		return ef.Uint8(), true
+	}
+	return 0, false
+}
+
 func (ef *TEFUint8) MarshalJSON() ([]byte, error) {
 	return []byte(t.String(ef.Uint8())), nil
 }

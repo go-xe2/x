@@ -36,16 +36,25 @@ func (del *tDelete) Execute() (int, error) {
 	cxt.SetDatabase(del.db)
 	builder := xdriver.GetSqlBuilderByName(cxt.Driver())
 
-	szTable := ""
+	//szTable := ""
 	cxt.PushState(xqi.SCPBuildDeleteTableState)
 	if tk := del.table.Compile(builder, cxt, false); tk == nil || tk.TType() == xqi.SqlEmptyTokenType {
-		return 0, exception.NewText("表达式中等删除数据的表实体无效")
+		return 0, exception.NewText("表达式中删除数据的表实体无效")
 	} else {
-		szTable = tk.Val()
+		_ = tk.Val()
 	}
-	cxt.PopState()
+	defer cxt.PopState()
+	tableName := builder.QuotesName(cxt.TablePrefix() + del.table.TableName())
 
-	sql := fmt.Sprintf("DELETE FROM %s", szTable)
+	tableAlias := builder.QuotesName(del.table.TableAlias())
+
+	sql := ""
+	if tableAlias != "" {
+		// mysql delete语句别名处理, delete cc from tableName cc
+		sql = fmt.Sprintf("DELETE %s FROM %s AS %s", tableAlias, tableName, tableAlias)
+	} else {
+		sql = fmt.Sprintf("DELETE FROM %s", tableName)
+	}
 	vars := make([]interface{}, 0)
 	szWhere := ""
 
@@ -55,7 +64,6 @@ func (del *tDelete) Execute() (int, error) {
 		if tk != nil && tk.TType() != xqi.SqlEmptyTokenType {
 			szWhere = tk.Val()
 			vars = builder.MakeQueryParams(cxt.Params())
-
 		}
 		cxt.PopState()
 	}

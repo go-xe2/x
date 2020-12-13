@@ -83,7 +83,7 @@ func (stf *TSqlTableField) makeQrName(builder DbDriverSqlBuilder, withTable, wit
 	}
 	s += builder.QuotesName(stf.fieldName)
 	if withAlias && stf.fieldAlias != "" {
-		s += " " + stf.fieldAlias
+		s += " " + builder.QuotesName(stf.fieldAlias)
 	}
 	return s
 }

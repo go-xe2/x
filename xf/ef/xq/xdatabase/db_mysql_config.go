@@ -84,8 +84,16 @@ func (cfg *TDbMysqlConfig) Dsn() string {
 	return s
 }
 
+func (cfg *TDbMysqlConfig) SetProtocol(protocol string) {
+	cfg.protocol = protocol
+}
+
 func (cfg *TDbMysqlConfig) Protocol() string {
 	return cfg.protocol
+}
+
+func (cfg *TDbMysqlConfig) SetHost(host string) {
+	cfg.host = host
 }
 
 // 数据库服务器地址
@@ -93,9 +101,17 @@ func (cfg *TDbMysqlConfig) Host() string {
 	return cfg.host
 }
 
+func (cfg *TDbMysqlConfig) SetPort(port int) {
+	cfg.port = port
+}
+
 // 数据库服务器端口号
 func (cfg *TDbMysqlConfig) Port() int {
 	return cfg.port
+}
+
+func (cfg *TDbMysqlConfig) SetDbName(dbName string) {
+	cfg.dbName = dbName
 }
 
 // 数据库名称
@@ -103,9 +119,17 @@ func (cfg *TDbMysqlConfig) DbName() string {
 	return cfg.dbName
 }
 
+func (cfg *TDbMysqlConfig) SetUser(user string) {
+	cfg.user = user
+}
+
 // 账户名
 func (cfg *TDbMysqlConfig) User() string {
 	return cfg.user
+}
+
+func (cfg *TDbMysqlConfig) SetPassword(pwd string) {
+	cfg.password = pwd
 }
 
 // 密码

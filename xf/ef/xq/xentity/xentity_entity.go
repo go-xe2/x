@@ -57,7 +57,9 @@ func newfieldFormatterStore(options map[string]interface{}, formatter func(old i
 
 type TEntity struct {
 	*baseEntity
-	lastSql  string
+	lastSql string
+	// 最后插入的id
+	lastId   int64
 	keyField xqi.EntField
 	// 是否已经创建实体之间的关系
 	// 外联实体关系字典，如果为空表达未创建实体关系

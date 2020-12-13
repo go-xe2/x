@@ -27,6 +27,10 @@ func init() {
 	SetDebug(cmdenv.Get("x.xlog.debug", true).Bool())
 }
 
+func Logger() *TLogger {
+	return logger
+}
+
 func Clone() *TLogger {
 	return logger.Clone()
 }

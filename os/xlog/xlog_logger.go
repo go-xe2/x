@@ -66,6 +66,7 @@ func (l *TLogger) Clone() *TLogger {
 	logger := TLogger{}
 	logger = *l
 	logger.parent = l
+	_ = logger.SetPath(l.GetPath())
 	return &logger
 }
 

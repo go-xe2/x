@@ -9,14 +9,16 @@ type TSqlStrConcat struct {
 	*TSqlFun
 	val1 interface{}
 	val2 interface{}
+	more []interface{}
 }
 
 var _ SqlFun = &TSqlStrConcat{}
 
-func NewSqlFunConcat(val1 interface{}, val2 interface{}) SqlFun {
+func NewSqlFunConcat(val1 interface{}, val2 interface{}, more ...interface{}) SqlFun {
 	inst := &TSqlStrConcat{
 		val1: val1,
 		val2: val2,
+		more: more,
 	}
 	base := newSqlFun(SFConcat, inst)
 	inst.TSqlFun = base
@@ -64,6 +66,25 @@ func (sf *TSqlStrConcat) Compile(builder DbDriverSqlBuilder, cxt SqlCompileConte
 			v2 = builder.MakeRealValue(sf.val2)
 		}
 	}
-	result.SetVal(builder.Concat(v1, v2))
+	moreVals := make([]string, 0)
+	if sf.more != nil {
+		for _, v := range sf.more {
+			if cv2, ok := v.(SqlCompiler); ok {
+				if tk := cv2.Compile(builder, cxt, unPrepare...); tk != nil && tk.TType() != SqlEmptyTokenType {
+					moreVals = append(moreVals, tk.Val())
+				}
+			} else {
+				if prepare {
+					vnMore := cxt.MakeParamId()
+					cxt.AddParam(vnMore, v)
+					result.AddParam(vnMore, v)
+					moreVals = append(moreVals, builder.PlaceHolder(vnMore))
+				} else {
+					moreVals = append(moreVals, builder.MakeRealValue(v))
+				}
+			}
+		}
+	}
+	result.SetVal(builder.Concat(v1, v2, moreVals...))
 	return result
 }

@@ -6,8 +6,9 @@ import (
 )
 
 func New(options ...*TLoggerOptions) logger.ILogger {
-	mLogger := xlog.Clone()
+	mLogger := xlog.Logger()
 	if len(options) > 0 {
+		mLogger = xlog.Clone()
 		opt := options[0]
 		mLogger.SetFlags(opt.GetFlags())
 		mLogger.SetAsync(opt.GetAsync())
@@ -16,7 +17,6 @@ func New(options ...*TLoggerOptions) logger.ILogger {
 		mLogger.SetStack(opt.GetEnableStack())
 		mLogger.SetStackSkip(opt.GetStackSkip())
 		mLogger.SetWriter(opt.GetWriter())
-
 	}
 	return &TDefaultLogger{
 		logger: mLogger,

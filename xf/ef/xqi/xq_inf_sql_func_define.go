@@ -6,6 +6,8 @@ const (
 	SFUnDefine SqlFunId = iota
 	SFCase
 	SFSubString
+	SFFromBase64
+	SFToBase64
 	// 字符串连接函数
 	SFConcat
 	SFDateAdd
@@ -26,6 +28,8 @@ const (
 var SqlFunIdNames = map[SqlFunId]string{
 	SFCase:       "case",
 	SFSubString:  "Substring",
+	SFFromBase64: "FromBase64",
+	SFToBase64:   "ToBase64",
 	SFConcat:     "Concat",
 	SFDateAdd:    "DateAdd",
 	SFDateSub:    "DateSub",
@@ -44,6 +48,8 @@ var SqlFunIdNames = map[SqlFunId]string{
 var FuncNameMapSqlFunId = map[string]SqlFunId{
 	"case":       SFCase,
 	"Substring":  SFSubString,
+	"FromBase64": SFFromBase64,
+	"ToBase64":   SFToBase64,
 	"Concat":     SFConcat,
 	"substring":  SFSubString,
 	"DateAdd":    SFDateAdd,

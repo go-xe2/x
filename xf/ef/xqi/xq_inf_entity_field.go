@@ -18,6 +18,9 @@ type EntField interface {
 	// 定义的名称
 	DefineName() string
 	Value() interface{}
+	// 是否打开
+	IsOpen() bool
+	TryGetVal() interface{}
 	Set(val interface{}) FieldValue
 	Supper() EntField
 	// 获取字段元注解
@@ -58,84 +61,101 @@ type EFExpr interface {
 type EFString interface {
 	EntField
 	Str() string
+	TryStr() (string, bool)
 }
 
 type EFInt interface {
 	EntField
 	Int() int
+	TryInt() (int, bool)
 }
 
 type EFInt8 interface {
 	EntField
 	Int8() int8
+	TryInt8() (int8, bool)
 }
 
 type EFInt16 interface {
 	EntField
 	Int16() int16
+	TryInt16() (int16, bool)
 }
 
 type EFInt32 interface {
 	EntField
 	Int32() int32
+	TryInt32() (int32, bool)
 }
 
 type EFInt64 interface {
 	EntField
 	Int64() int64
+	TryInt64() (int64, bool)
 }
 
 type EFUint interface {
 	EntField
 	Uint() uint
+	TryUint() (uint, bool)
 }
 
 type EFUint8 interface {
 	EntField
 	Uint8() uint8
+	TryUint8() (uint8, bool)
 }
 
 type EFUint16 interface {
 	EntField
 	Uint16() uint16
+	TryUint16() (uint16, bool)
 }
 
 type EFUint32 interface {
 	EntField
 	Uint32() uint32
+	TryUint32() (uint32, bool)
 }
 
 type EFUint64 interface {
 	EntField
 	Uint64() uint64
+	TryUint64() (uint64, bool)
 }
 
 type EFFloat interface {
 	EntField
 	Float() float32
+	TryFloat() (float32, bool)
 }
 
 type EFDouble interface {
 	EntField
 	Double() float64
+	TryDouble() (float64, bool)
 }
 
 type EFBool interface {
 	EntField
 	Bool() bool
+	TryBool() (bool, bool)
 }
 
 type EFByte interface {
 	EntField
 	Byte() byte
+	TryByte() (byte, bool)
 }
 
 type EFDate interface {
 	EntField
 	Date() time.Time
+	TryDate() (time.Time, bool)
 }
 
 type EFBinary interface {
 	EntField
 	Bytes() []byte
+	TryBytes() ([]byte, bool)
 }

@@ -140,7 +140,15 @@ func (sqt *tSqlQueryTable) Compile(builder xdriveri.DbDriverSqlBuilder, cxt SqlC
 	if tableName == "" {
 		tableName = cxt.MakeIndentId()
 	}
-	expr := fmt.Sprintf("(%s) %s", subExpr, tableName)
+	state := cxt.State()
+	expr := ""
+	switch state {
+	case SCPQrSelectWhereCondState, SCPQrSelectHavingCondState:
+		expr = fmt.Sprintf("(%s)", subExpr)
+		break
+	default:
+		expr = fmt.Sprintf("(%s) %s", subExpr, tableName)
+	}
 	sqt.compileData = result
 	return result.SetVal(expr)
 }

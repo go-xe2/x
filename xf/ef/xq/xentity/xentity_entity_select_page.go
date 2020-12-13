@@ -20,6 +20,8 @@ type tEntitySelectPage struct {
 var _ EntitySelectPage = (*tEntitySelectPage)(nil)
 
 func newEntitySelectPage(entSelect *tEntitySelect, pageIndex, pageSize int) *tEntitySelectPage {
+	CheckPageSize(&pageSize)
+	CheckPageIndex(&pageIndex)
 	inst := &tEntitySelectPage{
 		sel:       entSelect,
 		pageIndex: pageIndex,

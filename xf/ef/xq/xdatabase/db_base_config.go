@@ -36,6 +36,26 @@ func NewBaseConfig(driver, dsn string, maxOpenCons, maxIdleCons int, prefix stri
 	return inst
 }
 
+func (cfg *TDbBaseConfig) SetPrefix(prefix string) {
+	cfg.prefix = prefix
+}
+
+func (cfg *TDbBaseConfig) SetMaxOpenCons(v int) {
+	cfg.maxOpenCons = v
+}
+
+func (cfg *TDbBaseConfig) SetMaxIdleCons(v int) {
+	cfg.maxIdleCons = v
+}
+
+func (cfg *TDbBaseConfig) SetDriver(driver string) {
+	cfg.driver = driver
+}
+
+func (cfg *TDbBaseConfig) SetDSN(dsn string) {
+	cfg.dsn = dsn
+}
+
 func (cfg *TDbBaseConfig) LoadFromMap(c map[string]interface{}) {
 	cfg.driver = t.String(c["driver"], "mysql")
 	cfg.maxOpenCons = t.Int(c["maxOpenCons"], 0)

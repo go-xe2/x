@@ -18,11 +18,21 @@ func And(items ...xqi.SqlLogic) xqi.SqlCondition {
 }
 
 func Or(items ...xqi.SqlLogic) xqi.SqlCondition {
-	return xqcomm.NewSqlCondition(xqi.SqlConditionOrLogic).And(items...)
+	var result xqi.SqlCondition = xqcomm.NewSqlCondition(xqi.SqlConditionOrLogic)
+	for _, v := range items {
+		result = result.Or(v)
+	}
+	return result
+	//return xqcomm.NewSqlCondition(xqi.SqlConditionOrLogic).And(items...)
 }
 
 func Xor(items ...xqi.SqlLogic) xqi.SqlCondition {
-	return xqcomm.NewSqlCondition(xqi.SqlConditionXorLogic).And(items...)
+	var result xqi.SqlCondition = xqcomm.NewSqlCondition(xqi.SqlConditionOrLogic)
+	for _, v := range items {
+		result = result.Xor(v)
+	}
+	return result
+	//return xqcomm.NewSqlCondition(xqi.SqlConditionXorLogic).And(items...)
 }
 
 func Eq(exp1, exp2 interface{}) xqi.SqlConditionItem {

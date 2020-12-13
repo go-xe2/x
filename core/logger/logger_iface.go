@@ -15,7 +15,7 @@ const (
 )
 
 var LogLevelNames = map[LogLevel]string{
-	LEVEL_DEBU: "调度",
+	LEVEL_DEBU: "调试",
 	LEVEL_INFO: "提示",
 	LEVEL_WARN: "警告",
 	LEVEL_ERRO: "错误",

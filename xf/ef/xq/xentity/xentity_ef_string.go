@@ -21,6 +21,13 @@ func (ef *TEFString) Str() string {
 	return t.String(ef.baseField.Value())
 }
 
+func (ef *TEFString) TryStr() (string, bool) {
+	if ef.IsOpen() {
+		return ef.Str(), true
+	}
+	return "", false
+}
+
 func (ef *TEFString) Value() interface{} {
 	return ef.Str()
 }

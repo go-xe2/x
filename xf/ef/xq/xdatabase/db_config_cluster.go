@@ -46,8 +46,16 @@ func (dcc *TDbConfigCluster) Driver() string {
 	return dcc.driver
 }
 
+func (dcc *TDbConfigCluster) SetDriver(driver string) {
+	dcc.driver = driver
+}
+
 func (dcc *TDbConfigCluster) Prefix() string {
 	return dcc.prefix
+}
+
+func (dcc *TDbConfigCluster) SetPrefix(prefix string) {
+	dcc.prefix = prefix
 }
 
 func (dcc *TDbConfigCluster) This() interface{} {

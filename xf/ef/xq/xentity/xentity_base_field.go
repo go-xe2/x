@@ -123,6 +123,24 @@ func (ef *baseField) GetAnnotation(annName string) interface{} {
 	return nil
 }
 
+func (ef *baseField) IsOpen() bool {
+	return ef.index >= 0
+}
+
+func (ef *baseField) TryGetVal() interface{} {
+	if ef.index < 0 {
+		return nil
+	}
+	if ds, ok := ef.entity.This().(xqi.Dataset); ok {
+		v := ds.FieldValue(ef.index)
+		if fn := ef.entity.FieldFormat(ef.DefineName()); fn != nil {
+			v = fn(v)
+		}
+		return v
+	}
+	return nil
+}
+
 func (ef *baseField) Value() interface{} {
 	if ef.index < 0 {
 		panic(exception.NewText("打开的数据集中未包含该字段"))

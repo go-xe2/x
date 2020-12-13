@@ -20,6 +20,13 @@ func (ef *TEFUint32) Uint32() uint32 {
 	return t.Uint32(ef.baseField.Value())
 }
 
+func (ef *TEFUint32) TryUint32() (uint32, bool) {
+	if ef.IsOpen() {
+		return ef.Uint32(), true
+	}
+	return 0, false
+}
+
 func (ef *TEFUint32) Value() interface{} {
 	return ef.Uint32()
 }

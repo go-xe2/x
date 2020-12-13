@@ -28,6 +28,13 @@ func (ef *TEFBool) Bool() bool {
 	return t.Bool(ef.baseField.Value())
 }
 
+func (ef *TEFBool) TryBool() (bool, bool) {
+	if ef.IsOpen() {
+		return ef.Bool(), true
+	}
+	return false, false
+}
+
 func (ef *TEFBool) MarshalJSON() ([]byte, error) {
 	return []byte(t.String(ef.Bool())), nil
 }

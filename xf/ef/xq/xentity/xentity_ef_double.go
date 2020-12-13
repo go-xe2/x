@@ -24,6 +24,13 @@ func (ef *TEFDouble) Double() float64 {
 	return t.Float64(ef.baseField.Value())
 }
 
+func (ef *TEFDouble) TryDouble() (float64, bool) {
+	if ef.IsOpen() {
+		return ef.Double(), true
+	}
+	return 0, false
+}
+
 func (ef *TEFDouble) MarshalJSON() ([]byte, error) {
 	return []byte(t.String(ef.Double())), nil
 }

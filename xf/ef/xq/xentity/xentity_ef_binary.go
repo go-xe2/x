@@ -29,6 +29,13 @@ func (ef *TEFBinary) Bytes() []byte {
 	return t.Bytes(ef.baseField.Value())
 }
 
+func (ef *TEFBinary) TryBytes() ([]byte, bool) {
+	if ef.IsOpen() {
+		return ef.Bytes(), true
+	}
+	return nil, false
+}
+
 func (ef *TEFBinary) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf("\"%s\"", t.String(ef.Bytes()))), nil
 }

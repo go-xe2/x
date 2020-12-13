@@ -44,6 +44,7 @@ func (eni *tEntityInsert) Execute() (int, error) {
 	if n, err := db.Execute(tk.Val(), vars...); err != nil {
 		return 0, err
 	} else {
+		eni.entity.lastId = db.LastInsertId()
 		return int(n), nil
 	}
 }

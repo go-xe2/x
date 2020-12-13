@@ -96,11 +96,21 @@ func (ent *TEntity) buildJoinCondition(fields []xqi.SqlField) (result []*foreign
 	for _, field := range fields {
 		inst := field.This()
 		ef, ok := inst.(xqi.EntField)
-		if !ok {
-			panic(exception.Newf("字段%s非实体字段", field.AliasName()))
-		}
-		if ef.Entity() != ent.This() {
-			panic(exception.Newf("字段%s非实体%s定义的字段", field.AliasName(), ent.TableName()))
+		fdName := ""
+		if ok {
+			//panic(exception.Newf("字段%s非实体字段", field.AliasName()))
+			if ef.Entity() != ent.This() {
+				panic(exception.Newf("字段%s非实体%s定义的字段", field.AliasName(), ent.TableName()))
+			}
+			fdName = ef.FieldName()
+			if ef.AliasName() != "" {
+				fdName = ef.AliasName()
+			}
+			nameMaps[ef.DefineName()] = fdName
+		} else {
+			fdName = field.AliasName()
+			// 表达式查询时不支持绑定到字段值
+			// nameMaps[ef.DefineName()] = fdName
 		}
 		if _, ok := inst.(xqi.EFForeign); ok {
 			if fieldItems, ok := ent.fieldConditions[field]; ok {
@@ -111,11 +121,6 @@ func (ent *TEntity) buildJoinCondition(fields []xqi.SqlField) (result []*foreign
 				}
 			}
 		}
-		fdName := ef.FieldName()
-		if ef.AliasName() != "" {
-			fdName = ef.AliasName()
-		}
-		nameMaps[ef.DefineName()] = fdName
 	}
 
 	// 根据引用关系排序，与实体本身有关系的项排在最前，实关联到的实体项应该在该项之前定义
@@ -206,4 +211,8 @@ func (ent *TEntity) getFieldListByRule(rule string) []xqi.SqlField {
 		}
 	}
 	return fieldList
+}
+
+func (ent *TEntity) LastInsertId() int64 {
+	return ent.lastId
 }

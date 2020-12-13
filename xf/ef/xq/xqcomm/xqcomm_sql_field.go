@@ -96,7 +96,7 @@ func (sf *TSqlField) Compile(builder DbDriverSqlBuilder, cxt SqlCompileContext, 
 	}
 	if state == SCPQrSelectFieldsState || state == SCPQrSelectFieldState {
 		if sf.alias != "" {
-			exp = xdbUtil.IfThen(bExpCp, fmt.Sprintf("%s AS %s", exp, sf.alias), fmt.Sprintf("%s %s", exp, sf.alias)).(string)
+			exp = xdbUtil.IfThen(bExpCp, fmt.Sprintf("%s AS %s", exp, builder.QuotesName(sf.alias)), fmt.Sprintf("%s %s", exp, builder.QuotesName(sf.alias))).(string)
 		}
 	}
 	return result.SetVal(exp)

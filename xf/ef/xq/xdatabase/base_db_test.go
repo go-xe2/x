@@ -24,6 +24,8 @@ var config = xdatabase.NewMysqlConfigFromMap(map[string]interface{}{
 })
 
 func TestTBaseDb(t *testing.T) {
+	//clusterCfg := xdatabase.NewDbConfigCluster()
+
 	conn, err := xdatabase.NewDbConn(config)
 	if err != nil {
 		t.Fatal(err)
@@ -32,7 +34,11 @@ func TestTBaseDb(t *testing.T) {
 		"b_bool, n_int,n_bigint,n_tinyint, n_float,n_double,t_datetime,t_date,t_time,c_char,c_text,c_tinytext,c_longtext," +
 		"c_blob,c_tinyblob,c_longblob,c_binary,c_varbinary " +
 		" from tableA where user_id in (?,?,?,?,?)"
-	db := xdatabase.NewDbWithConn(conn)
+	db := xdatabase.DB()
+	if err := db.Connection(conn); err != nil {
+		t.Fatal(err)
+	}
+
 	ret, err := db.Query(xqi.MapBinder, szSql, 1, 2, 3, 4, 5)
 	if err != nil {
 		fmt.Println(err)
@@ -48,14 +54,15 @@ func TestTBaseDb(t *testing.T) {
 	if _, ok := ret1.(xjson.JsonStr); ok {
 		t.Log("ret1 is JsonStr=====>>>")
 	}
+
 	var TestData = map[string]interface{}{
 		"total": 33,
 		"rows":  ret1,
 	}
 
-	bytes, err = json.Marshal(TestData)
-	if err != nil {
-		t.Fatal(err)
+	bytes, e1 := json.Marshal(TestData)
+	if e1 != nil {
+		t.Fatal(e1)
 	}
 	fmt.Println("json marshal:", string(bytes))
 

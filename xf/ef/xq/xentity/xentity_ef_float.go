@@ -24,6 +24,13 @@ func (ef *TEFFloat) Float() float32 {
 	return t.Float32(ef.baseField.Value())
 }
 
+func (ef *TEFFloat) TryFloat() (float32, bool) {
+	if ef.IsOpen() {
+		return ef.Float(), true
+	}
+	return 0, false
+}
+
 func (ef *TEFFloat) MarshalJSON() ([]byte, error) {
 	return []byte(t.String(ef.Float())), nil
 }

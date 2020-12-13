@@ -143,8 +143,15 @@ type EntityCUD interface {
 	UpdateFromParams(params map[string]interface{}, where ...SqlCondition) (int, error)
 }
 
+type EntityTrans interface {
+	BeginTrans() error
+	CommitTrans() error
+	RollbackTrans() error
+}
+
 type Entity interface {
 	BasicEntity
+	EntityTrans
 	// 继承的父类
 	Supper() Entity
 	// 设置实体继承类实例, 供构架内部调用
@@ -154,6 +161,8 @@ type Entity interface {
 	// 主键字段
 	KeyField() EntField
 	LastSql() string
+	// 最后插入的id
+	LastInsertId() int64
 	EntityQuery
 	// 在特定数据库中进行操作
 	Database(dbName string) Entity

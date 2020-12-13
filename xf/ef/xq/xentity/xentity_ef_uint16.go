@@ -20,6 +20,13 @@ func (ef *TEFUint16) Uint16() uint16 {
 	return t.Uint16(ef.baseField.Value())
 }
 
+func (ef *TEFUint16) TryUint16() (uint16, bool) {
+	if ef.IsOpen() {
+		return ef.Uint16(), true
+	}
+	return 0, false
+}
+
 func (ef *TEFUint16) Value() interface{} {
 	return ef.Uint16()
 }

@@ -41,6 +41,8 @@ func (agg *TSqlFunAggregate) Compile(builder DbDriverSqlBuilder, cxt SqlCompileC
 		// 不是聚合函数
 		return EmptySqlToken
 	}
+	cxt.PushState(SCPQrSelectExprFieldState)
+	defer cxt.PopState()
 	tk := agg.exp.Compile(builder, cxt, unPrepare...)
 	result.SetVal(fmt.Sprintf(aggregateFunSql[agg.funId], tk.Val()))
 	return result

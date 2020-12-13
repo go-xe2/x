@@ -24,6 +24,13 @@ func (ef *TEFInt32) Int32() int32 {
 	return t.Int32(ef.baseField.Value())
 }
 
+func (ef *TEFInt32) TryInt32() (int32, bool) {
+	if ef.IsOpen() {
+		return ef.Int32(), true
+	}
+	return 0, false
+}
+
 func (ef *TEFInt32) MarshalJSON() ([]byte, error) {
 	return []byte(t.String(ef.Int32())), nil
 }

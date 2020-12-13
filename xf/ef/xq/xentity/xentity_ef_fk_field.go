@@ -130,6 +130,18 @@ func (ef *TEFForeign) Value() interface{} {
 	return nil
 }
 
+func (ef *TEFForeign) IsOpen() bool {
+	return ef.index >= 0
+}
+
+func (ef *TEFForeign) TryGetVal() interface{} {
+	if ef.index < 0 {
+		return nil
+	} else {
+		return ef.Value()
+	}
+}
+
 func (ef *TEFForeign) Set(val interface{}) xqi.FieldValue {
 	// 不设置外联字段
 	return nil

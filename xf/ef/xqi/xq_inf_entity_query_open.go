@@ -7,6 +7,8 @@ type EntityQueryOpen interface {
 	// 最多返回count条数据
 	Top(count int) (int, error)
 
+	Page(pageIndex int, pageSize int) (pageInfo QueryPageInfo, err error)
+
 	// 查询条件
 	Where(where ...SqlCondition) EntityQueryOpen
 	// 查询分组

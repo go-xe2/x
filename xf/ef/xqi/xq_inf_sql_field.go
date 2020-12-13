@@ -57,8 +57,10 @@ type SqlField interface {
 
 	// 子字符串
 	Substr(from, l int) SqlField
+	FromBase64() SqlField
+	ToBase64() SqlField
 	// 字符串连接
-	Concat(val interface{}) SqlField
+	Concat(val interface{}, more ...interface{}) SqlField
 	// = Substr(from,l).Eq(eqVal)
 	SubEq(from, l int, eqVal interface{}) SqlConditionItem
 	// = Substr(from,l).Neq(neqVal)

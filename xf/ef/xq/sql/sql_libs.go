@@ -83,8 +83,8 @@ func Substring(str interface{}, from, len int) SqlField {
 }
 
 // 字符串连接
-func Concat(str interface{}, str1 interface{}) SqlField {
-	return xqcomm.SqlFunStrConcat(Static(str), Static(str1))
+func Concat(str interface{}, str1 interface{}, more ...interface{}) SqlField {
+	return xqcomm.SqlFunStrConcat(str, str1, more...)
 }
 
 // 加法运算

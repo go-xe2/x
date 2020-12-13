@@ -14,10 +14,10 @@ func (ent *TEntity) Select(fields ...SqlField) EntitySelect {
 	ent.buildRelation()
 
 	fieldList := ent.fields
+
 	if len(fields) > 0 {
 		fieldList = fields
 	}
-
 	joinTables, fieldNameMaps := ent.buildJoinCondition(fieldList)
 
 	query := xq.Query(ent.dbName...).Fields(func(tables SqlTables) []SqlField {

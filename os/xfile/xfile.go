@@ -448,7 +448,7 @@ func MainPkgPath() string {
 	for i := 1; i < 10000; i++ {
 		if _, file, _, ok := runtime.Caller(i); ok {
 			// <file> is separated by '/'
-			if xstring.New(file).Contains("/go-xe2/core/") {
+			if xstring.New(file).Contains("/go-xe2/x") {
 				continue
 			}
 			if Ext(file) != ".go" {
@@ -465,7 +465,6 @@ func MainPkgPath() string {
 				}
 				path = Dir(path)
 			}
-
 		} else {
 			break
 		}

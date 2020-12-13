@@ -42,7 +42,9 @@ type DbDriverSqlBuildFunLibs interface {
 type DbDriverSqlBuilderStrLibs interface {
 	// 数据库subString函数映射
 	Substring(field string, from int, len int) string
-	Concat(field string, v string) string
+	Concat(field string, v string, more ...string) string
+	FromBase64(field string) string
+	ToBase64(field string) string
 }
 
 // 数据库日期函数映射接口

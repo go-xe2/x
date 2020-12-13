@@ -8,13 +8,14 @@ import (
 	"github.com/go-xe2/x/sync/xsafeMap"
 	"os"
 	"sync"
+	"time"
 )
 
 type TFilePool struct {
-	id     *_type.TInt  // 指针池ID，用以识别指针池是否需要重建
-	pool   *xpool.TPool // 底层对象池
-	initEd *_type.TBool // 是否初始化(在执行第一次执行File方法后初始化，主要用于文件监听的添加，但是只能添加一次)
-	expire int          // 过期时间
+	id     *_type.TInt   // 指针池ID，用以识别指针池是否需要重建
+	pool   *xpool.TPool  // 底层对象池
+	initEd *_type.TBool  // 是否初始化(在执行第一次执行File方法后初始化，主要用于文件监听的添加，但是只能添加一次)
+	expire time.Duration // 过期时间
 }
 
 // 文件指针池指针
@@ -34,8 +35,8 @@ var (
 )
 
 // 获得文件对象，并自动创建指针池(过期时间单位：毫秒)
-func Open(path string, flag int, perm os.FileMode, expire ...int) (file *File, err error) {
-	fpExpire := 0
+func Open(path string, flag int, perm os.FileMode, expire ...time.Duration) (file *File, err error) {
+	var fpExpire time.Duration = 0
 	if len(expire) > 0 {
 		fpExpire = expire[0]
 	}
@@ -48,14 +49,14 @@ func Open(path string, flag int, perm os.FileMode, expire ...int) (file *File, e
 
 // Deprecated.
 // See Open.
-func OpenFile(path string, flag int, perm os.FileMode, expire ...int) (file *File, err error) {
+func OpenFile(path string, flag int, perm os.FileMode, expire ...time.Duration) (file *File, err error) {
 	return Open(path, flag, perm, expire...)
 }
 
 // 创建一个文件指针池，expire = 0表示不过期，expire < 0表示使用完立即回收，expire > 0表示超时回收，默认值为0表示不过期。
 // 注意过期时间单位为：毫秒。
-func New(path string, flag int, perm os.FileMode, expire ...int) *TFilePool {
-	fpExpire := 0
+func New(path string, flag int, perm os.FileMode, expire ...time.Duration) *TFilePool {
+	var fpExpire time.Duration = 0
 	if len(expire) > 0 {
 		fpExpire = expire[0]
 	}
@@ -69,7 +70,7 @@ func New(path string, flag int, perm os.FileMode, expire ...int) *TFilePool {
 }
 
 // 创建文件指针池
-func newFilePool(p *TFilePool, path string, flag int, perm os.FileMode, expire int) *xpool.TPool {
+func newFilePool(p *TFilePool, path string, flag int, perm os.FileMode, expire time.Duration) *xpool.TPool {
 	pool := xpool.New(expire, func() (interface{}, error) {
 		file, err := os.OpenFile(path, flag, perm)
 		if err != nil {

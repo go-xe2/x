@@ -3,6 +3,7 @@ package xentity
 import (
 	"fmt"
 	"github.com/go-xe2/x/type/t"
+	"github.com/go-xe2/x/type/xtime"
 	"github.com/go-xe2/x/xf/ef/xq/xqcomm"
 	"github.com/go-xe2/x/xf/ef/xqi"
 	"time"
@@ -34,9 +35,19 @@ func (ef *TEFDatetime) Date() time.Time {
 	return time.Unix(n, 0)
 }
 
+func (ef *TEFDatetime) TryDate() (time.Time, bool) {
+	if ef.IsOpen() {
+		return ef.Date(), true
+	}
+	return time.Now(), false
+}
+
 func (ef *TEFDatetime) Set(val interface{}) xqi.FieldValue {
-	t := t.XTime(val)
-	return xqcomm.NewFieldValue(ef, t.Unix())
+	tm := t.XTime(val)
+	if tm == nil {
+		tm = xtime.New(time.Unix(0, 0))
+	}
+	return xqcomm.NewFieldValue(ef, tm.Unix())
 }
 
 func (ef *TEFDatetime) MarshalJSON() ([]byte, error) {

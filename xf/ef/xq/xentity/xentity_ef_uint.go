@@ -24,6 +24,13 @@ func (ef *TEFUint) Uint() uint {
 	return t.Uint(ef.baseField.Value())
 }
 
+func (ef *TEFUint) TryUint() (uint, bool) {
+	if ef.IsOpen() {
+		return ef.Uint(), true
+	}
+	return 0, false
+}
+
 func (ef *TEFUint) MarshalJSON() ([]byte, error) {
 	return []byte(t.String(ef.Uint())), nil
 }

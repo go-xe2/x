@@ -24,6 +24,13 @@ func (ef *TEFInt8) Int8() int8 {
 	return t.Int8(ef.baseField.Value())
 }
 
+func (ef *TEFInt8) TryInt8() (int8, bool) {
+	if ef.IsOpen() {
+		return ef.Int8(), true
+	}
+	return 0, false
+}
+
 func (ef *TEFInt8) MarshalJSON() ([]byte, error) {
 	return []byte(t.String(ef.Int8())), nil
 }

@@ -13,7 +13,7 @@ import (
 type TPool struct {
 	list       *xsafeStack.TSafeStackQe
 	closed     *_type.TBool
-	Expire     int64
+	Expire     time.Duration
 	NewFunc    func() (interface{}, error)
 	ExpireFunc func(interface{})
 }
@@ -28,11 +28,11 @@ type NewFunc func() (interface{}, error)
 
 type ExpireFunc func(interface{})
 
-func New(expire int, newFunc NewFunc, expireFunc ...ExpireFunc) *TPool {
+func New(expire time.Duration, newFunc NewFunc, expireFunc ...ExpireFunc) *TPool {
 	r := &TPool{
 		list:    xsafeStack.New(),
 		closed:  _type.NewBool(),
-		Expire:  int64(expire),
+		Expire:  expire,
 		NewFunc: newFunc,
 	}
 	if len(expireFunc) > 0 {
@@ -50,7 +50,7 @@ func (p *TPool) Put(value interface{}) {
 	if p.Expire == 0 {
 		item.expire = 0
 	} else {
-		item.expire = xtime.Millisecond() + p.Expire
+		item.expire = time.Now().Add(p.Expire).Unix()
 	}
 	p.list.PushBack(item)
 }
@@ -105,7 +105,7 @@ func (p *TPool) checkExpire() {
 	for {
 		if r := p.list.PopFront(); r != nil {
 			item := r.(*poolItem)
-			if item.expire == 0 || item.expire > xtime.Millisecond() {
+			if item.expire == 0 || item.expire > time.Now().Unix() {
 				p.list.PushFront(item)
 				break
 			}

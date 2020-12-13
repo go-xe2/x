@@ -24,6 +24,13 @@ func (ef *TEFInt16) Int16() int16 {
 	return t.Int16(ef.baseField.Value())
 }
 
+func (ef *TEFInt16) TryInt16() (int16, bool) {
+	if ef.IsOpen() {
+		return ef.Int16(), true
+	}
+	return 0, false
+}
+
 func (ef *TEFInt16) MarshalJSON() ([]byte, error) {
 	return []byte(t.String(ef.Int16())), nil
 }

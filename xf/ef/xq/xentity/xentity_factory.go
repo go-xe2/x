@@ -161,8 +161,14 @@ func NewEntity(entityCls xqi.EntityClass) interface{} {
 				}
 			}
 		}
-
+		tmpMp := make(map[string]xqi.EntField)
 		for _, field := range createInfo.fields {
+			// 去掉重复字段
+			if _, ok := tmpMp[field.DefineName()]; ok {
+				continue
+			}
+			tmpMp[field.DefineName()] = field
+
 			if field.IsForeign() {
 				if foreign, ok := field.This().(xqi.EFForeign); ok {
 					base.foreignFields = append(base.foreignFields, foreign)
@@ -173,7 +179,8 @@ func NewEntity(entityCls xqi.EntityClass) interface{} {
 				entity.keyField = field
 			}
 			// fields 为所有字段列表，饱含外联字段
-			base.fields = append(base.fields, field)
+			// 字段的consructor中已经调用table的AddField方法添加字段，此处不需要现添加
+			//base.fields = append(base.fields, field)
 			base.fieldMaps[field.DefineName()] = field
 			if _, ok := base.fieldMaps[field.FieldName()]; !ok {
 				base.fieldMaps[field.FieldName()] = field

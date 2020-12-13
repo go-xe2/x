@@ -7,9 +7,17 @@ func (sf *TSqlField) Substr(from, l int) SqlField {
 	return SqlFunSubstring(sf.This(), from, l)
 }
 
+func (sf *TSqlField) FromBase64() SqlField {
+	return SqlFunFromBase64(sf.This())
+}
+
+func (sf *TSqlField) ToBase64() SqlField {
+	return SqlFunToBase64(sf.This())
+}
+
 // 字符串连接
-func (sf *TSqlField) Concat(val interface{}) SqlField {
-	return SqlFunStrConcat(sf.This(), val)
+func (sf *TSqlField) Concat(val interface{}, more ...interface{}) SqlField {
+	return SqlFunStrConcat(sf.This(), val, more...)
 }
 
 // = Substr(from,l).Eq(eqVal)

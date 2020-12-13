@@ -28,6 +28,13 @@ func (ef *TEFByte) Byte() byte {
 	return t.Byte(ef.baseField.Value())
 }
 
+func (ef *TEFByte) TryByte() (byte, bool) {
+	if ef.IsOpen() {
+		return ef.Byte(), true
+	}
+	return 0, false
+}
+
 func (ef *TEFByte) MarshalJSON() ([]byte, error) {
 	return []byte(t.String(ef.Byte())), nil
 }
