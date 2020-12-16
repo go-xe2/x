@@ -21,7 +21,7 @@ func NewExpressField(sqlExpress string, alias string) xqi.SqlField {
 }
 
 func (p *TExpressQueryField) Compile(builder xdriveri.DbDriverSqlBuilder, cxt xqi.SqlCompileContext, unPrepare ...bool) xqi.SqlToken {
-	return NewSqlToken(fmt.Sprintf("%s %s", p.express, p.alias), xqi.SqlFieldTokenType)
+	return NewSqlToken(fmt.Sprintf("%s", p.express), xqi.SqlFieldTokenType)
 }
 
 func (p *TExpressQueryField) TokenType() xqi.SqlTokenType {
