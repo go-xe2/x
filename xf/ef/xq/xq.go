@@ -5,7 +5,6 @@ import (
 	"github.com/go-xe2/x/xf/ef/xq/xdatabase"
 	"github.com/go-xe2/x/xf/ef/xq/xdelete"
 	"github.com/go-xe2/x/xf/ef/xq/xinsert"
-	"github.com/go-xe2/x/xf/ef/xq/xqcomm"
 	xquery2 "github.com/go-xe2/x/xf/ef/xq/xquery"
 	"github.com/go-xe2/x/xf/ef/xq/xupdate"
 	"github.com/go-xe2/x/xf/ef/xqi"
@@ -61,12 +60,4 @@ func Delete(table xqi.SqlTable, dbName ...string) xdelete.SqlDelete {
 
 func DeleteByDb(table xqi.SqlTable, db xqi.Database) xdelete.SqlDelete {
 	return xdelete.Delete(table, db)
-}
-
-func ExprField(sqlExpress string, alias string) xqi.SqlField {
-	return xqcomm.NewExpressField(sqlExpress, alias)
-}
-
-func ExprTable(sqlExpress string, alias string) xqi.SqlTable {
-	return xqcomm.NewExpressQuery(sqlExpress, alias)
 }
