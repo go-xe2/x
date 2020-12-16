@@ -3,7 +3,6 @@ package xqcomm
 import (
 	"fmt"
 	"github.com/go-xe2/x/xf/ef/xdriveri"
-	"github.com/go-xe2/x/xf/ef/xq/sql"
 	"github.com/go-xe2/x/xf/ef/xqi"
 )
 
@@ -52,7 +51,7 @@ func (sq *TExpressQueryTable) Field(index int) xqi.SqlField {
 }
 
 func (sq *TExpressQueryTable) FieldByName(name string) xqi.SqlField {
-	return sql.Field(name)
+	return NewSqlField(sq.This(), name)
 }
 
 func (sq *TExpressQueryTable) SelField(field xqi.SqlField) xqi.SqlField {
