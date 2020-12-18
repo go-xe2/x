@@ -109,7 +109,7 @@ func (sc *TSqlCondition) Compile(builder DbDriverSqlBuilder, cxt SqlCompileConte
 	} else if lExp != "" && rExp == "" {
 		exp = transRExpr(lExp)
 	} else if lExp != "" && rExp != "" {
-		exp = fmt.Sprintf("%s %s (%s)", lExp, sc.logic.String(), rExp)
+		exp = fmt.Sprintf("(%s %s (%s))", lExp, sc.logic.String(), rExp)
 	}
 	//
 	//if rExp != "" {
