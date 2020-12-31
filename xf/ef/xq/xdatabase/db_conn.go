@@ -18,7 +18,7 @@ type cluster struct {
 type TDbConn struct {
 	config DbConfigCluster
 	driver string
-	prefix string
+	//prefix string
 	dbs    *cluster
 	logger DbLogger
 }
@@ -66,12 +66,18 @@ func (c *TDbConn) Ping() exception.IException {
 
 // SetPrefix 设置表前缀
 func (c *TDbConn) SetPrefix(pre string) {
-	c.prefix = pre
+	if c.config != nil {
+		c.config.SetPrefix(pre)
+	}
+	//c.prefix = pre
 }
 
 // GetPrefix 获取前缀
 func (c *TDbConn) GetPrefix() string {
-	return c.prefix
+	if c.config != nil {
+		return c.config.Prefix()
+	}
+	return ""
 }
 
 func (c *TDbConn) GetDriver() string {
@@ -135,7 +141,8 @@ func (c *TDbConn) bootCluster() exception.IException {
 			c.driver = item.Driver()
 		}
 	}
-	var pre, dr string
+	//var pre, dr string
+	var dr string
 	if len(masters) > 0 {
 		for _, item := range masters {
 			db, err := c.bootReal(item)
@@ -150,18 +157,18 @@ func (c *TDbConn) bootCluster() exception.IException {
 			c.dbs.masterSize = c.dbs.masterSize + 1
 			c.driver = item.Driver()
 			//fmt.Println(c.dbs.masterSize)
-			if item.Prefix() != "" {
-				pre = item.Prefix()
-			}
+			//if item.Prefix() != "" {
+			//	pre = item.Prefix()
+			//}
 			if item.Driver() != "" {
 				dr = item.Driver()
 			}
 		}
 	}
 	// 如果config没有设置prefix,且configcluster设置了prefix,则使用cluster的prefix
-	if pre != "" && c.prefix == "" {
-		c.prefix = pre
-	}
+	//if pre != "" && c.prefix == "" {
+	//	c.prefix = pre
+	//}
 	// 如果config没有设置driver,且configcluster设置了driver,则使用cluster的driver
 	if dr != "" && c.driver == "" {
 		c.driver = dr

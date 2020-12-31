@@ -1,6 +1,8 @@
 package xquery
 
-import . "github.com/go-xe2/x/xf/ef/xqi"
+import (
+	. "github.com/go-xe2/x/xf/ef/xqi"
+)
 
 func (qe *tQueryExp) Limit(rows int, offset ...int) Query {
 	qe.checkMainTableSet()
